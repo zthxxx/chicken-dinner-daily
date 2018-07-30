@@ -1,0 +1,17 @@
+config = {
+    'login': {
+        'url': '',
+        'captcha': '',
+        'username': '',
+        'password': ''
+    },
+    'ocr': {
+        'app_id': '',
+        'api_key': '',
+        'secret_key': '',
+    },
+    'punch': {
+        'base': '',
+        'api': ''
+    }
+}
