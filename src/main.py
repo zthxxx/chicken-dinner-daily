@@ -1,5 +1,6 @@
 import time
 import json
+import logging
 
 from lxml import html
 
@@ -19,7 +20,7 @@ while status is not 302:
     ocr_str = aip_ocr(captcha_base64)
     while not ocr_str:
         time.sleep(1.2)
-        captcha_base64 = request_content(config['login']['captcha'])
+        captcha_base64, _ = request_content(config['login']['captcha'])
         ocr_str = aip_ocr(captcha_base64)
 
     login_args = {
@@ -32,8 +33,12 @@ while status is not 302:
 
     res, status = request_content(login_url, method='post', data=login_args)
     if status is 200:
+        logging.info('captcha is error, retry it')
+        time.sleep(2.5)
         login_page = html.fromstring(res)
     if status is 500:
+        logging.info('session or server is error, retry it')
+        time.sleep(5)
         reset_request()
         login_page = request_dom(login_url)
     if status is 302:

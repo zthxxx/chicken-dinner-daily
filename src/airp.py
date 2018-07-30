@@ -7,6 +7,7 @@ from datetime import datetime
 from aip import AipOcr
 
 from config import config
+from lib.conffor import ensure_dir_exist
 
 logging.basicConfig(level=logging.INFO)
 
@@ -17,8 +18,9 @@ SECRET_KEY = config['ocr']['secret_key']
 client = AipOcr(APP_ID, API_KEY, SECRET_KEY)
 
 CAPTCHA_DIR = 'captcha-test'
-captchas = os.listdir('captcha-test')
 dataurl_header = 'data:image/jpeg;base64,'
+captchas = os.listdir(CAPTCHA_DIR)
+captchas = list(filter(lambda file: 'captcha_' not in file, captchas))
 
 
 def get_img_content(img):
@@ -29,7 +31,9 @@ def get_img_content(img):
 def save_captcha(img_base64):
     image = base64.b64decode(img_base64)
     timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-    with open('captcha_%s.jpg' % timestamp, 'wb+') as fp:
+    image_file = f'{CAPTCHA_DIR}/captcha_{timestamp}.jpg'
+    ensure_dir_exist(image_file)
+    with open(image_file, 'wb+') as fp:
         fp.write(image)
 
 
@@ -66,8 +70,5 @@ def aip_test():
         time.sleep(0.5)
     hit_rate = matched / len(captchas) * 100
     logging.info(f'total is {len(captchas)}, matched {matched}, hit rate {hit_rate}%')
-
-
-aip_test()
 
 
