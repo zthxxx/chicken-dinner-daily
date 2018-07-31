@@ -5,7 +5,7 @@ DATAURL_HEADER = 'data:image/jpeg;base64,'
 
 
 def request_content(url, method='get', **kwargs):
-    response = request.request(method, url, allow_redirects=False, **kwargs)
+    response = request.request(method, url, **kwargs)
     response.encoding = response.apparent_encoding
     return response.text, response.status_code
 

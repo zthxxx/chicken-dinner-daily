@@ -1,6 +1,7 @@
 import logging
 
 from config import config
+from lib.utils.ocr import save_captcha
 from lib.utils.request import base64_dataurl, reset_request
 
 request = reset_request()
@@ -9,6 +10,7 @@ request = reset_request()
 def juhe_ocr(data_url):
     logging.info('request juhe vercode api.')
     img_base64 = base64_dataurl(data_url)
+    save_captcha(img_base64)
     data = {
         'key': config['juhe']['app_key'],
         'codeType': config['juhe']['type_code'],

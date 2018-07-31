@@ -1,4 +1,3 @@
-import json
 import logging
 import time
 
@@ -7,51 +6,61 @@ from retrying import retry
 
 from config import config
 from lib.utils.request import get_attrib, request_content, request_dom, reset_request
-from src.juhe_vercode import juhe_ocr
+from lib.captcha.airp import aip_ocr
 
-login_url = config['login']['url']
-login_page = request_dom(login_url)
+image2str = aip_ocr
 
-status = 200
-ocr_method = juhe_ocr
 
-while status != 302:
-    token = get_attrib(login_page, '#token', 'value')
-    captcha_base64 = get_attrib(login_page, '#captcha', 'src')
+def init_connection():
+    login_url = config['login']['url']
+    login_page = request_dom(login_url)
+    return login_page
 
-    ocr_str = ocr_method(captcha_base64)
-    while not ocr_str:
+
+def get_captcha_str(login_page):
+    captcha_dataurl = get_attrib(login_page, '#captcha', 'src')
+    captcha = image2str(captcha_dataurl)
+    while not captcha:
         time.sleep(1.2)
-        captcha_base64, _ = request_content(config['login']['captcha'])
-        ocr_str = ocr_method(captcha_base64)
+        captcha_dataurl, _ = request_content(config['login']['captcha'])
+        captcha = image2str(captcha_dataurl)
+    return captcha
 
+
+def login(token, captcha):
+    """
+    :param captcha: str of captcha
+    :return: is_logined, logined_page
+    """
     login_args = {
         'logintype': 0,
         'user': config['login']['username'],
         'password': config['login']['password'],
         '_token': token,
-        'phrase': ocr_str
+        'phrase': captcha
     }
-
+    login_url = config['login']['url']
     res, status = request_content(login_url, method='post', data=login_args)
-    if status == 200:
-        logging.warning('captcha is error, retry it')
-        time.sleep(2.5)
-        login_page = html.fromstring(res)
-    if status == 500:
+    if status != 200:
         logging.info('session or server is error, retry it')
-        time.sleep(5)
         reset_request()
-        login_page = request_dom(login_url)
-    if status == 302:
+        return False, init_connection()
+    login_flag = '验证码错误' not in res
+    if login_flag:
         logging.info(('login ok', res, status))
+    else:
+        logging.warning('captcha is error, retry it')
+    return login_flag, html.fromstring(res)
 
-base_page = request_dom(config['punch']['base'])
-token = get_attrib(base_page, '#token', 'value')
 
-
-punch_api = config['punch']['api']
-punch_args = json.dumps({'_token': token})
+def retry_login(login_page):
+    token = get_attrib(login_page, '#token', 'value')
+    captcha = get_captcha_str(login_page)
+    login_flag, next_page = login(token, captcha)
+    if login_flag:
+        return next_page
+    else:
+        return retry_login(next_page)
 
 
 @retry(wait_random_min=3000, wait_random_max=5000,
@@ -62,5 +71,17 @@ def retry_punch(api, args):
     return status
 
 
-retry_punch(punch_api, punch_args)
+def punch(punch_page):
+    token = get_attrib(punch_page, '#token', 'value')
+    punch_api = config['punch']['api']
+    punch_args = {'_token': token}
+    retry_punch(punch_api, punch_args)
 
+
+def run():
+    login_page = init_connection()
+    punch_page = retry_login(login_page)
+    punch(punch_page)
+
+
+run()
