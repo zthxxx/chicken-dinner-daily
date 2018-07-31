@@ -1,26 +1,20 @@
-import os
-import time
 import logging
 import base64
 from datetime import datetime
+import logging
 
 from aip import AipOcr
 
 from config import config
 from lib.conffor import ensure_dir_exist
+from lib.utils.ocr_hit import CAPTCHA_DIR
+from lib.utils.request import base64_dataurl
 
-logging.basicConfig(level=logging.INFO)
-
-APP_ID = config['ocr']['app_id']
-API_KEY = config['ocr']['api_key']
-SECRET_KEY = config['ocr']['secret_key']
+APP_ID = config['baidu_aip']['app_id']
+API_KEY = config['baidu_aip']['api_key']
+SECRET_KEY = config['baidu_aip']['secret_key']
 
 client = AipOcr(APP_ID, API_KEY, SECRET_KEY)
-
-CAPTCHA_DIR = 'captcha-test'
-dataurl_header = 'data:image/jpeg;base64,'
-captchas = os.listdir(CAPTCHA_DIR)
-captchas = list(filter(lambda file: 'captcha_' not in file, captchas))
 
 
 def get_img_content(img):
@@ -39,9 +33,9 @@ def save_captcha(img_base64):
 
 def aip_ocr(data_url):
     logging.info('request aip ocr api.')
-    img_base64 = data_url.replace(dataurl_header, '')
+    img_base64 = base64_dataurl(data_url)
     save_captcha(img_base64)
-    res = client.webImage(bytes(), options={
+    res = client.basicAccurate(bytes(), options={
         'image': img_base64
     })
     if 'words_result_num' not in res or res['words_result_num'] is 0:
@@ -52,23 +46,10 @@ def aip_ocr(data_url):
     return results[0] if results else None
 
 
-def aip_test():
-    matched = 0
-    for captcha in captchas:
-        image = get_img_content(f'{CAPTCHA_DIR}/{captcha}')
-        res = client.webImage(image)
-        captcha = os.path.splitext(captcha)[0]
-        if 'words_result_num' not in res or res['words_result_num'] is 0:
-            logging.info(f'{captcha}  aip have not result')
-            continue
-        results = [result['words'] for result in res['words_result']]
-        match_tip = ''
-        if captcha in results:
-            matched += 1
-            match_tip = 'has matched'
-        logging.info((captcha, results, match_tip))
-        time.sleep(0.5)
-    hit_rate = matched / len(captchas) * 100
-    logging.info(f'total is {len(captchas)}, matched {matched}, hit rate {hit_rate}%')
-
-
+def aip_test(image):
+    res = client.webImage(image)
+    if 'words_result_num' not in res or res['words_result_num'] is 0:
+        logging.info(f'aip have not result')
+        return ['aip have NOT any result']
+    results = [result['words'] for result in res['words_result']]
+    return results

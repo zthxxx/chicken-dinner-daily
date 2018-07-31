@@ -1,5 +1,7 @@
-import requests
 from lxml import html
+import requests
+
+DATAURL_HEADER = 'data:image/jpeg;base64,'
 
 
 def request_content(url, method='get', **kwargs):
@@ -27,6 +29,10 @@ def reset_request():
                       'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.79 Safari/537.36'
     })
     return req
+
+
+def base64_dataurl(data_url):
+    return data_url.replace(DATAURL_HEADER, '')
 
 
 request = reset_request()
