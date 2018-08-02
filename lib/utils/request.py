@@ -1,7 +1,12 @@
-from lxml import html
+from bs4 import BeautifulSoup
 import requests
 
+HTML_PARSER = 'html.parser'
 DATAURL_HEADER = 'data:image/jpeg;base64,'
+
+
+def html(markup):
+    return BeautifulSoup(markup, HTML_PARSER)
 
 
 def request_content(url, method='get', **kwargs):
@@ -12,11 +17,11 @@ def request_content(url, method='get', **kwargs):
 
 def request_dom(url, *args, **kwargs):
     response, _ = request_content(url, *args, **kwargs)
-    return html.fromstring(response)
+    return html(response)
 
 
 def get_attrib(dom, select, attr):
-    return dom.cssselect(select)[0].attrib.get(attr)
+    return dom.select(select)[0].attrs.get(attr)
 
 
 def reset_request():

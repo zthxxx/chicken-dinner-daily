@@ -1,13 +1,13 @@
 import logging
 import time
 
-from lxml import html
 from retrying import retry
 
 from config import config
-from lib.utils.request import get_attrib, request_content, request_dom, reset_request
 from lib.captcha.airp import aip_ocr
+from lib.utils.request import get_attrib, html, request_content, request_dom, reset_request
 
+HTML_PARSER = 'html.parser'
 image2str = aip_ocr
 
 
@@ -47,10 +47,11 @@ def login(token, captcha):
         return False, init_connection()
     login_flag = '验证码错误' not in res
     if login_flag:
-        logging.info(('login ok', res, status))
+        logging.info(('login ok, status:', status))
+        logging.debug(('login-ok page raw:', res))
     else:
         logging.warning('captcha is error, retry it')
-    return login_flag, html.fromstring(res)
+    return login_flag, html(res)
 
 
 def retry_login(login_page):
