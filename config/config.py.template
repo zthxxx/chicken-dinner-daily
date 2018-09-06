@@ -1,22 +1,11 @@
 config = {
     'login': {
         'url': '',
-        'captcha': '',
         'username': '',
         'password': ''
     },
     'punch': {
         'base': '',
         'api': ''
-    },
-    'baidu_aip': {
-        'app_id': '',
-        'api_key': '',
-        'secret_key': '',
-    },
-    'juhe': {
-        'app_key': '',
-        'api': 'http://op.juhe.cn/vercode/index',
-        'type_code': 1005
     }
 }
