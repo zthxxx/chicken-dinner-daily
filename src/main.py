@@ -57,6 +57,7 @@ def find_subsystem(sso_page, subsystem):
 
 
 @retry(wait_random_min=3000, wait_random_max=5000,
+       stop_max_attempt_number=10,
        retry_on_result=lambda code: code != 200)
 def retry_punch(api, args):
     res, status = request_content(api, method='post', data=args)
@@ -65,7 +66,9 @@ def retry_punch(api, args):
     except Exception:
         result = res
     logging.info(('punch submit', result, status))
-    return status
+    if '成功' in res:
+        return status
+    return 500
 
 
 def punch(punch_page):
@@ -76,6 +79,7 @@ def punch(punch_page):
 
 
 def run():
+    logging.info('winner winner, chicken dinner')
     login_page = init_connection()
     sso_page = retry_login(login_page)
     punch_page = find_subsystem(sso_page, '人事系统')
