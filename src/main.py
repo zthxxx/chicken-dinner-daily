@@ -24,7 +24,7 @@ def login(token):
         'logintype': 0,
         'username': config['login']['username'],
         'password': config['login']['password'],
-        'sso_failnum': 0,
+        'sso_failnum': '',
         '_token': token
     }
     login_url = config['login']['url']
@@ -61,12 +61,10 @@ def find_subsystem(sso_page, subsystem):
        retry_on_result=lambda code: code != 200)
 def retry_punch(api, args):
     res, status = request_content(api, method='post', data=args)
-    try:
-        result = json.loads(res)
-    except Exception:
-        result = res
+    result = json.loads(res)
+    message = result.get('message', '')
     logging.info(('punch submit', result, status))
-    if '成功' in res:
+    if '成功' in message:
         return status
     return 500
 
