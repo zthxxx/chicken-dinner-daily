@@ -27,7 +27,7 @@ def get_attrib(dom, select, attr):
 def reset_request():
     req = requests.Session()
     req.headers.update({
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'Accept': '*/*',
         'Accept-Encoding': 'gzip, deflate',
         'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7',
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) '

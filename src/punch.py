@@ -11,7 +11,7 @@ HTML_PARSER = 'html.parser'
 
 
 def init_connection():
-    login_url = config['login']['url']
+    login_url = config['punch']['route']
     login_page = request_dom(login_url)
     return login_page
 
@@ -27,7 +27,7 @@ def login(token):
         'sso_failnum': '',
         '_token': token
     }
-    login_url = config['login']['url']
+    login_url = config['punch']['route']
     res, status = request_content(login_url, method='post', data=login_args)
     if status != 200:
         logging.info('session or server is error, retry it')

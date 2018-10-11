@@ -1,11 +1,14 @@
 config = {
     'login': {
-        'url': '',
         'username': '',
         'password': ''
     },
     'punch': {
-        'base': '',
+        'route': '',
+        'api': ''
+    },
+    'portal': {
+        'route': ''
         'api': ''
     }
 }
