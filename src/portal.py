@@ -15,14 +15,14 @@ PORTAL_BASE = {
 
 
 def get_csrf_token():
-    login_page, _ = request_content(config['portal']['route'])
-
+    login_page, status = request_content(config['portal']['route'])
+    logging.info(f'portal login page status: <{status}>')
     token_pattern = re.compile('\{"csrf_token": "(?P<csrf_token>.*)"\}')
-    csrf_token = token_pattern.search(login_page.text).group('csrf_token')
+    csrf_token = token_pattern.search(login_page).group('csrf_token')
     return csrf_token
 
 
-def pass_portal(csrf_token)
+def pass_portal(csrf_token):
     request.headers.update({'X-CSRFToken': csrf_token})
 
     password = b64encode(config['login']['password'].encode()).decode()
@@ -33,8 +33,8 @@ def pass_portal(csrf_token)
         **PORTAL_BASE
     }
 
-    portal_res, _ = request_content(config['portal']['api'], method='post', data=portal_args)
-
+    portal_res = request.post(config['portal']['api'], data=portal_args)
+    logging.info(f'portal post status: <{portal_res.status_code}>')
     logging.debug(portal_res.request.headers)
     logging.info(portal_res.json())
 
