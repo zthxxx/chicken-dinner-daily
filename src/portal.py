@@ -4,13 +4,13 @@ import logging
 import re
 
 from config import config
+from lib.utils.airport import assert_ssid_matched
 from lib.utils.request import request, request_content
 
 PORTAL_BASE = {
     'os_name': 'Mac OS',
     'browser_name': 'chrome 69.0',
-    'force_change': 0,
-    'request_url': 'https://google.com/'
+    'force_change': 0
 }
 
 
@@ -40,6 +40,8 @@ def pass_portal(csrf_token):
 
 
 def run():
+    logging.info('WLAN portal start.')
+    assert_ssid_matched()
     csrf_token = get_csrf_token()
     pass_portal(csrf_token)
 

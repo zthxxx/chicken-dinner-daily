@@ -1,4 +1,5 @@
 config = {
+    'ssid_pattern': '',
     'login': {
         'username': '',
         'password': ''

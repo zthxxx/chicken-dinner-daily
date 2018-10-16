@@ -5,6 +5,7 @@ import json
 from retrying import retry
 
 from config import config
+from lib.utils.airport import assert_ssid_matched
 from lib.utils.request import get_attrib, html, request_content, request_dom, reset_request
 
 HTML_PARSER = 'html.parser'
@@ -57,14 +58,14 @@ def find_subsystem(sso_page, subsystem):
 
 
 @retry(wait_random_min=3000, wait_random_max=5000,
-       stop_max_attempt_number=10,
-       retry_on_result=lambda code: code != 200)
+       stop_max_attempt_number=3,
+       retry_on_result=lambda code: code // 100 != 2)
 def retry_punch(api, args):
     res, status = request_content(api, method='post', data=args)
     result = json.loads(res)
     message = result.get('message', '')
     logging.info(('punch submit', result, status))
-    if '成功' in message:
+    if '成功' in message or '未到打卡时间' in message:
         return status
     return 500
 
@@ -78,6 +79,7 @@ def punch(punch_page):
 
 def run():
     logging.info('winner winner, chicken dinner')
+    assert_ssid_matched()
     login_page = init_connection()
     sso_page = retry_login(login_page)
     punch_page = find_subsystem(sso_page, '人事系统')

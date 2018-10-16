@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.zthxxx.AirportListener</string>
+	<key>WorkingDirectory</key>
+	<string>/Users/zthxxx/Library/LaunchAgents</string>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>LISTENER_WORKING_DIR</key>
+		<string>~/Library/Scripts/chicken-dinner</string>
+	</dict>
+	<key>ProgramArguments</key>
+	<array>
+		<string>bash</string>
+		<string>-lc</string>
+		<string>
+			echo;
+			SSID=`airport -I | awk -F': ' '/ SSID/ {print $2}'`;
+			echo "[`date`] link to ${SSID}";
+
+			eval LISTENER_WORKING_DIR="${LISTENER_WORKING_DIR}"
+			cd "${LISTENER_WORKING_DIR}";
+			source on-airport-change.sh
+		</string>
+	</array>
+
+	<key>WatchPaths</key>
+	<array>
+		<string>/Library/Preferences/SystemConfiguration/com.apple.airport.preferences.plist</string>
+	</array>
+
+    <key>StandardOutPath</key>
+    <string>../Logs/AirportListener/on_network_change.log</string>  
+    <key>StandardErrorPath</key>  
+    <string>../Logs/AirportListener/on_network_change.log</string>
+</dict>
+</plist>
