@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>com.zthxxx.AirportListener</string>
+	<string>com.zthxxx.ChickenDinnerDaily</string>
 	<key>WorkingDirectory</key>
 	<string>/Users/zthxxx/Library/LaunchAgents</string>
 	<key>EnvironmentVariables</key>
@@ -17,24 +17,28 @@
 		<string>-lc</string>
 		<string>
 			echo;
-			SSID=`airport -I | awk -F': ' '/ SSID/ {print $2}'`;
-			echo "[`date`] link to ${SSID}";
+			echo "[`date`] start punch post";
 
 			eval LISTENER_WORKING_DIR="${LISTENER_WORKING_DIR}"
 			cd "${LISTENER_WORKING_DIR}";
 			. venv/bin/activate;
-			python -m src.portal;
+			python -m src.punch;
 		</string>
 	</array>
 
-	<key>WatchPaths</key>
-	<array>
-		<string>/Library/Preferences/SystemConfiguration/com.apple.airport.preferences.plist</string>
-	</array>
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Hour</key>
+		<integer>20</integer>
+		<key>Minute</key>
+		<integer>3</integer>
+		<key>Weekday</key>
+		<integer>1-5</integer>
+	</dict>
 
     <key>StandardOutPath</key>
-    <string>../Logs/AirportListener/on_network_change.log</string>  
+    <string>../Logs/ChickenDinnerDaily/punch.log</string>  
     <key>StandardErrorPath</key>  
-    <string>../Logs/AirportListener/on_network_change.log</string>
+    <string>../Logs/ChickenDinnerDaily/punch.log</string>
 </dict>
 </plist>
