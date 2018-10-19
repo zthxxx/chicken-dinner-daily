@@ -33,8 +33,6 @@
 		<integer>20</integer>
 		<key>Minute</key>
 		<integer>3</integer>
-		<key>Weekday</key>
-		<integer>1-5</integer>
 	</dict>
 
     <key>StandardOutPath</key>
