@@ -19,8 +19,9 @@
 			echo;
 			echo "[`date`] start punch post";
 
-			eval LISTENER_WORKING_DIR="${LISTENER_WORKING_DIR}"
+			eval LISTENER_WORKING_DIR="${LISTENER_WORKING_DIR}";
 			cd "${LISTENER_WORKING_DIR}";
+			export PYTHONIOENCODING=utf-8;
 			. venv/bin/activate;
 			python -m src.punch;
 		</string>

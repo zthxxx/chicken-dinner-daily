@@ -20,8 +20,9 @@
 			SSID=`airport -I | awk -F': ' '/ SSID/ {print $2}'`;
 			echo "[`date`] link to ${SSID}";
 
-			eval LISTENER_WORKING_DIR="${LISTENER_WORKING_DIR}"
+			eval LISTENER_WORKING_DIR="${LISTENER_WORKING_DIR}";
 			cd "${LISTENER_WORKING_DIR}";
+			export PYTHONIOENCODING=utf-8;
 			. venv/bin/activate;
 			python -m src.portal;
 		</string>
