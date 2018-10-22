@@ -3,6 +3,8 @@ import json
 import logging
 import re
 
+from pync import Notifier
+
 from config import config
 from lib.utils.airport import assert_ssid_matched
 from lib.utils.request import request, request_content
@@ -34,9 +36,12 @@ def pass_portal(csrf_token):
     }
 
     portal_res = request.post(config['portal']['api'], data=portal_args)
-    logging.info(f'portal post status: <{portal_res.status_code}>')
+    status_code = portal_res.status_code
+    logging.info(f'portal post status: <{status_code}>')
     logging.debug(portal_res.request.headers)
-    logging.info(portal_res.json())
+    result = portal_res.json()
+    logging.info(result)
+    Notifier.notify(result.get('reason', 'failed'), title='portal post', open='https://google.com/')
 
 
 def run():

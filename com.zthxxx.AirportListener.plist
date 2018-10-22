@@ -18,7 +18,13 @@
 		<string>
 			echo;
 			SSID=`airport -I | awk -F': ' '/ SSID/ {print $2}'`;
-			echo "[`date`] link to ${SSID}";
+			
+			if [ -n "${SSID}" ]; then
+				echo "[`date`] link to ${SSID}";
+			else 
+				echo "[`date`] wlan linked nothing";
+				exit;
+			fi
 
 			eval LISTENER_WORKING_DIR="${LISTENER_WORKING_DIR}";
 			cd "${LISTENER_WORKING_DIR}";

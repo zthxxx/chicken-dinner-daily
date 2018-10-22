@@ -3,6 +3,7 @@ import time
 import json
 
 from retrying import retry
+from pync import Notifier
 
 from config import config
 from lib.utils.airport import assert_ssid_matched
@@ -65,6 +66,7 @@ def retry_punch(api, args):
     result = json.loads(res)
     message = result.get('message', '')
     logging.info(('punch submit', result, status))
+    Notifier.notify(message, title='punch dinner')
     if '成功' in message or '未到打卡时间' in message:
         return status
     return 500
