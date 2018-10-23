@@ -3,11 +3,13 @@ import json
 import logging
 import re
 
-from pync import Notifier
+from retrying import retry
+from requests.exceptions import RequestException
 
 from config import config
 from lib.utils.airport import assert_ssid_matched
 from lib.utils.request import request, request_content
+from lib.utils.notify import notify
 
 PORTAL_BASE = {
     'os_name': 'Mac OS',
@@ -41,14 +43,23 @@ def pass_portal(csrf_token):
     logging.debug(portal_res.request.headers)
     result = portal_res.json()
     logging.info(result)
-    Notifier.notify(result.get('reason', 'failed'), title='portal post', open='https://google.com/')
+    portal_status = result.get('reason') == 'success'
+    notify('Portal Post', '🎉 Success' if portal_status else '💥 Failed')
+
+
+@retry(wait_random_min=3000, wait_random_max=5000,
+       stop_max_attempt_number=3)
+def portal_post():
+    csrf_token = get_csrf_token()
+    pass_portal(csrf_token)
 
 
 def run():
     logging.info('WLAN portal start.')
     assert_ssid_matched()
-    csrf_token = get_csrf_token()
-    pass_portal(csrf_token)
-
+    try:
+        portal_post()
+    except RequestException as e:
+        notify('💥 Portal Failed', f'Request Error: {e}')
 
 run()
