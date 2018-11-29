@@ -14,6 +14,7 @@ def get_ssid():
 
 def ssid_matched():
     ssid = get_ssid()
+    logging.debug(f'WiFi SSID linkd "{ssid}"')
     ssid_pattern = re.compile(config['ssid_pattern'])
     return ssid_pattern.match(ssid)
 

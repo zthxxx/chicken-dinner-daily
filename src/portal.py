@@ -19,6 +19,7 @@ PORTAL_BASE = {
 
 
 def get_csrf_token():
+    logging.debug('get_csrf_token start')
     login_page, status = request_content(config['portal']['route'])
     logging.info(f'portal login page status: <{status}>')
     token_pattern = re.compile('\{"csrf_token": "(?P<csrf_token>.*)"\}')
@@ -27,6 +28,7 @@ def get_csrf_token():
 
 
 def pass_portal(csrf_token):
+    logging.debug('pass_portal start')
     request.headers.update({'X-CSRFToken': csrf_token})
 
     password = b64encode(config['login']['password'].encode()).decode()

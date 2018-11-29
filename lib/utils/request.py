@@ -1,3 +1,5 @@
+import logging
+
 from bs4 import BeautifulSoup
 import requests
 
@@ -11,7 +13,10 @@ def html(markup):
 
 def request_content(url, method='get', **kwargs):
     response = request.request(method, url, **kwargs)
-    response.encoding = response.apparent_encoding
+    logging.debug(f'''
+    request url {url}
+    response  {response.text[:20]}
+    ''')
     return response.text, response.status_code
 
 
