@@ -50,11 +50,17 @@ def retry_login(login_page):
         return retry_login(next_page)
 
 
-def find_subsystem(sso_page, subsystem):
-    subsystem_anchors = sso_page.select('div.ibox-content .row ul li a')
-    for anchor in subsystem_anchors:
-        if subsystem in anchor.text:
-            href = anchor.attrs.get('href')
+def find_subsystem(sso_page, subsystem_target):
+    bg_subsystems = sso_page.select('div.wecash-bg')
+    for subsystem in bg_subsystems:
+        subsystem_anchors = subsystem.select('.title_data span')
+        anchor = subsystem_anchors and subsystem_anchors[0]
+        if subsystem_target in anchor.text:
+            links = subsystem.select('.row a[target=_blank]')
+            link = links and links[0]
+            if not link:
+                continue
+            href = link.attrs.get('href')
             return request_dom(href)
 
 
@@ -67,8 +73,9 @@ def retry_punch(api, args):
     message = result.get('message', '')
     logging.info(('punch submit', result, status))
     notify('Punch Dinner', message)
-    if '成功' in message or '未到打卡时间' in message:
-        return status
+    for tip in ['成功', '已打卡', '未到打卡时间']:
+        if tip in message:
+            return status
     return 500
 
 
