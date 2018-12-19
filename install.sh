@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # curl -sSL https://github.com/zthxxx/chicken-dinner-daily/raw/master/install.sh | bash
+# will download this project to ~/Library/Scripts/
 
 git clone --depth 1 https://github.com/zthxxx/chicken-dinner-daily.git ~/Downloads/chicken-dinner
 
