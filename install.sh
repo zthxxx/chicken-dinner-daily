@@ -3,6 +3,8 @@
 # curl -sSL https://github.com/zthxxx/chicken-dinner-daily/raw/master/install.sh | bash
 # will download this project to ~/Library/Scripts/
 
+mkdir -p ~/Downloads ~/Library/Scripts
+
 git clone --depth 1 https://github.com/zthxxx/chicken-dinner-daily.git ~/Downloads/chicken-dinner
 
 ln -s ~/Downloads/chicken-dinner ~/Library/Scripts/
@@ -15,6 +17,8 @@ ln -s "`pwd`/com.zthxxx.AirportListener.plist" ~/Library/LaunchAgents/
 ln -s "`pwd`/com.zthxxx.ChickenDinnerDaily.plist" ~/Library/LaunchAgents/
 
 cp config/config.py.template config/config.py
+
+python3 -m venv venv && venv/bin/python -m pip install -r requirements.txt
 
 vim config/config.py
 
