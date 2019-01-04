@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 # curl -sSL https://github.com/zthxxx/chicken-dinner-daily/raw/master/install.sh | bash
-# will download this project to ~/Library/Scripts/
+# will download this project to `~/Downloads/chicken-dinner` and link to `~/Library/Scripts/chicken-dinner
+# status show `launchctl list | grep zthxxx`
 
 mkdir -p ~/Downloads ~/Library/Scripts
 
@@ -20,8 +21,7 @@ cp config/config.py.template config/config.py
 
 python3 -m venv venv && venv/bin/python -m pip install -r requirements.txt
 
-vim config/config.py
-
-
-launchctl load ~/Library/LaunchAgents/com.zthxxx.AirportListener.plist
-launchctl load ~/Library/LaunchAgents/com.zthxxx.ChickenDinnerDaily.plist
+vim config/config.py && (
+    launchctl load ~/Library/LaunchAgents/com.zthxxx.AirportListener.plist
+    launchctl load ~/Library/LaunchAgents/com.zthxxx.ChickenDinnerDaily.plist
+)

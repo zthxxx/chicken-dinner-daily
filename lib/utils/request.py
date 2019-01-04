@@ -12,6 +12,7 @@ def html(markup):
 
 
 def request_content(url, method='get', **kwargs):
+    kwargs['timeout'] = kwargs.get('timeout', 10)
     response = request.request(method, url, **kwargs)
     logging.debug(f'''
     request url {url}
