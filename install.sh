@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# curl -sSL https://github.com/zthxxx/chicken-dinner-daily/raw/master/install.sh | bash
+# curl -sSL https://gitcdn.xyz/repo/zthxxx/chicken-dinner-daily/master/install.sh | bash
 # will download this project to `~/Downloads/chicken-dinner` and link to `~/Library/Scripts/chicken-dinner
 # status show `launchctl list | grep zthxxx`
 
