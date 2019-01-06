@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
 
-# curl -sSL https://gitcdn.xyz/repo/zthxxx/chicken-dinner-daily/master/install.sh | bash
-# will download this project to `~/Downloads/chicken-dinner` and link to `~/Library/Scripts/chicken-dinner
+# curl -sSL https://github.com/zthxxx/chicken-dinner-daily/raw/master/install.sh | bash
+# will clone this project to `./chicken-dinner` then link it to `~/Library/Scripts/chicken-dinner
 # status show `launchctl list | grep zthxxx`
 
-mkdir -p ~/Downloads ~/Library/Scripts
+git clone --depth 1 https://github.com/zthxxx/chicken-dinner-daily.git chicken-dinner
 
-git clone --depth 1 https://github.com/zthxxx/chicken-dinner-daily.git ~/Downloads/chicken-dinner
+mkdir -p ~/Library/Scripts
+mkdir -p ~/Library/Logs/AirportListener ~/Library/Logs/ChickenDinnerDaily
 
-ln -s ~/Downloads/chicken-dinner ~/Library/Scripts/
+ln -s "`pwd`/chicken-dinner" ~/Library/Scripts/
 
 cd ~/Library/Scripts/chicken-dinner
 
-sed "-i" "s/Users\/zthxxx\/Library/Users\/${USER}\/Library/g" com.zthxxx.AirportListener.plist com.zthxxx.ChickenDinnerDaily.plist
+perl -i -pe "s/Users\/zthxxx\/Library/Users\/${USER}\/Library/g" com.zthxxx.AirportListener.plist com.zthxxx.ChickenDinnerDaily.plist
 
 ln -s "`pwd`/com.zthxxx.AirportListener.plist" ~/Library/LaunchAgents/
 ln -s "`pwd`/com.zthxxx.ChickenDinnerDaily.plist" ~/Library/LaunchAgents/

@@ -1,5 +1,4 @@
 from base64 import b64encode
-import json
 import logging
 import re
 
@@ -62,6 +61,6 @@ def run():
     try:
         portal_post()
     except RequestException as e:
-        notify('💥 Portal Failed', f'Request Error: {e}')
+        notify('💥 Portal Failed', f'ERR: {e}')
 
 run()

@@ -1,15 +1,26 @@
 config = {
+    # regular expression to match which Wi-Fi SSID will trigger actions
     'ssid_pattern': '',
+
+    # your user identity
     'login': {
         'username': '',
-        'password': ''
+        'password': '',
     },
+
     'punch': {
+        # entry url for get CSRF token
         'route': '',
-        'api': ''
+
+        # API url to send punch post
+        'api': '',
     },
+
     'portal': {
+        # entry url for get CSRF token
         'route': '',
-        'api': ''
+
+        # API url to send portal access post
+        'api': '',
     }
 }
