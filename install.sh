@@ -11,6 +11,8 @@ mkdir -p ~/Library/Logs/AirportListener ~/Library/Logs/ChickenDinnerDaily
 
 ln -s "`pwd`/chicken-dinner" ~/Library/Scripts/
 
+ln -s /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/local/bin/airport
+
 cd ~/Library/Scripts/chicken-dinner
 
 perl -i -pe "s/Users\/zthxxx\/Library/Users\/${USER}\/Library/g" com.zthxxx.AirportListener.plist com.zthxxx.ChickenDinnerDaily.plist
